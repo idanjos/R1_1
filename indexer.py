@@ -3,9 +3,11 @@ import pprint
 class Indexer:
 	def __init__(self): #(pair,odd) # options...
 		self.dictionary = dict()
+
+		# Matrix that hold sorted tokens by size and alphabetically
 		self.ordered_tokens = [[]]
 
-		self.tokens = []
+		
 	def addIndex(self,token,doc_id,n=1): # assuming assuming array of 2, changeble compared to tuples
 		if token in self.dictionary.keys():
 			self.dictionary[token]+=[[doc_id,n]]
@@ -17,6 +19,12 @@ class Indexer:
 		pass
 	def print(self):
 		pprint.pprint(self.dictionary)
+	# OrderTokens is design to order tokens by number and string. To do so, 
+	# the number is added to token as a prefix string, separating both with a '-'.
+	# The function sorted() then can sort tokens by their size and then by name.
+	# The problem here is how can one know when 531-and > 1-octopus. By using a matrix,
+	# lines corresponding to the number of digits of the document frequency, thus making it easier
+	# to save to file by size then alphabetically
 	def orderTokens(self):
 		temp = [[]]
 		for token in self.dictionary.keys():
@@ -32,40 +40,20 @@ class Indexer:
 		#pprint.pprint(temp)
 		for array in temp:
 			self.ordered_tokens+=[sorted(array,reverse=True)]
+	
+	#Write to file
+	def writeIndexes(self,filename):
+		file = open(filename, "w")
+		
+		for key in sorted(self.dictionary.keys()):
 			
-		
-		#self.ordered_tokens = sorted(self.dictionary.keys())
-		#print(sorted(unordered_list))
-
-	def top10(self):
-		temp = []
-		index = len(self.ordered_tokens)
-		while len(temp)< 10:
-			index -= 1
-			if index < 0:
-				print("Error: top10 failed!, not enough words")
-				break;
-			for word in self.ordered_tokens[index]:
-				temp += [word]
-				if len(temp) >= 10:
-					break
-		print(temp)#return this
-
-		
-	def rarest10(self):
-		temp = []
-		index = -1
-
-		while len(temp) < 10:
-			index+=1
-			if index >= len(self.ordered_tokens):
-				print("Error: rarest10 failed!, not enough words")
-			temp += self.ordered_tokens[index]
-
-		print(sorted(temp)[:10])# shoudl be returning
-
-		
-	def writeIndexes(self): 
+			output = key
+			for l in self.dictionary[key]:
+				output += ","+str(l[0])+":"+str(l[1])
+					
+				#print(output)
+			file.write(output+"\n")
+		file.close()
 		pass
-	def vocabularySize(self):
-		return len(self.dictionary.keys())
+	
+	
