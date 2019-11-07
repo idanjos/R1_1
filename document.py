@@ -2,7 +2,8 @@ import indexer
 import Stemmer
 import re
 stopWords = open("stopwords.txt","r").read() 		#Stopwords
-stemmer = Stemmer.Stemmer('english') 				#Stemmer
+stemmer = Stemmer.Stemmer('english')				#Stemmer
+regex = re.compile('[^a-zA-Z]')
 class Document:
 	DOCID = 0
 	def __init__(self,docid,pmid="0",ti=""):
@@ -33,7 +34,7 @@ class Document:
 	#Tokenizer 1
 	def tokenize1(self):
 		#Non alphabetical characters are replaced with a space
-		temp = re.sub('[^a-zA-Z]'," ",self.ti).lower()
+		temp = regex.sub(" ",self.ti).lower()
 		i = 0
 		for substring in temp.split(" "):
 			i+=1
@@ -54,7 +55,10 @@ class Document:
 
 		for key in temp:
 			#Adding non stopWords to the dictionary, stemmer applied
+
 			if key not in stopWords:
+				if key == "and":
+					print(key)
 				self.TokV2Dict[stemmer.stemWord(key)] = self.TokV1Dict[key]
 			
 		
