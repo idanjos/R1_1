@@ -12,7 +12,7 @@ class Indexer:
 		self.dictionary = dict()
 		self.ordered_tokens = [[]]
 		gc.collect()
-		print("Cleared")
+		#print("Cleared")
 	def setPath(self,filename):
 		self.filename = filename
 	def addIndex(self,token,doc_id,n=1): # assuming assuming array of 2, changeble compared to tuples

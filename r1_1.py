@@ -7,6 +7,9 @@ import indexer as Indexer
 import document
 import sys
 import gc
+import os
+import merge
+import random
 
 # Document id
 docid = 0
@@ -57,9 +60,10 @@ for i in range(2,len(sys.argv)):
 				#Next Document id, trivial
 				docid+=1
 				text = ""
-				if docid % 10000 == 0:
-					print(psutil.virtual_memory().percent)	
-				if psutil.virtual_memory().percent > 60.0:
+				if random.random() < 0.0001:
+				#if docid % 10000 == 0:
+					#print(psutil.virtual_memory().percent)	
+				
 					indexer.orderTokens()
 					indexer.writeIndexes()
 					indexer.clear()
@@ -78,8 +82,17 @@ for i in range(2,len(sys.argv)):
 	
 	#Writing to file
 	indexer.writeIndexes()
-
+	print("Indexing finished")
+	merge.merge()
 print("--- %s seconds ---" % (time.time() - start))
+
+'''
+TODO LIST:
+Point input to a folder
+BSBI Merge -> Calculate IDF and Term weight -> write line to final
+'''
+
+
 
 
 	
