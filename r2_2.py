@@ -2,7 +2,8 @@ import re
 import pprint as pp
 import Stemmer
 import psutil
-import time 
+import time
+import psutil
 import indexer as Indexer
 import document
 import sys
@@ -21,6 +22,12 @@ indexer = Indexer.Indexer()			#Indexer of tokenizer
 
 # Begin the timer.
 start = time.time()
+
+def memory_usage_psutil():
+    # return the memory usage in percentage like top
+    process = psutil.Process(os.getpid())
+    mem = process.memory_percent()
+    return mem
 
 #Now loads all files from input folder
 def getFiles(path):
@@ -45,8 +52,8 @@ if len(sys.argv) < 4:
 	print("Error: no parameters found, usage: python r1_1.py [tokenizer=(1 | 2)] [number (0-1 activate prob of block creation after each doc)| (>=1 activates fixed size)] [folder of documents]")
 	exit(1)
 inputFiles = getFiles(sys.argv[-1])
-option = float(sys.argv[2])
-if option <= 0:
+limite = float(sys.argv[2])
+if limite <= 0:
 	print("Number needs to be greater than 0")
 	exit(1)
 for i in inputFiles:
@@ -84,16 +91,15 @@ for i in inputFiles:
 				#Next Document id, trivial
 				docid+=1
 				text = ""
-				if option >= 1:
-					if docid % option==0:
-						indexer.orderTokens()
-						indexer.writeIndexes()
-						indexer.clear()
-				else:
-					if random.random() < option:
-						indexer.orderTokens()
-						indexer.writeIndexes()
-						indexer.clear()
+				#print(memory_usage_psutil())
+				if memory_usage_psutil() > limite:
+					memory_usage_psutil()
+					indexer.orderTokens()
+					indexer.writeIndexes()
+					indexer.clear()
+					time.sleep(1)
+					    
+   			
 					
 					
 					
@@ -112,7 +118,7 @@ merge.merge("merge/merged.txt")
 print("--- %s seconds ---" % (time.time() - start))
 print("Merge finished")
 
-calculations.calculateIndexes(docid,"merge/merged.txt")
+calculations.calculateIndexes(docid,"merge/merged.txt",limite)
 print("--- %s seconds ---" % (time.time() - start))
 print("Calculations finished")
 

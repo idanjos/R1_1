@@ -4,10 +4,10 @@ class Indexer:
 	def __init__(self): #(pair,odd) # options...
 		self.dictionary = dict()
 		self.filename = ""
-		self.idf = []
 		self.block_number = 0
 		# Matrix that hold sorted tokens by size and alphabetically
 		self.ordered_tokens = [[]]
+	#Clear data from indexer
 	def clear(self):
 		self.dictionary = dict()
 		self.ordered_tokens = [[]]
@@ -22,11 +22,7 @@ class Indexer:
 			self.dictionary[token] = [[doc_id,n]]                     
 		
 		#return True
-	def uploadArray(self, doc_id,array):
-		pass
 
-	def print(self):
-		pprint.pprint(self.dictionary)
 	# OrderTokens is design to order tokens by number and string. To do so, 
 	# the number is added to token as a prefix string, separating both with a '-'.
 	# The function sorted() then can sort tokens by their size and then by name.
